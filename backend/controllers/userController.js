@@ -6,25 +6,22 @@ const sendToken = require("../utils/jwtToken");
 
 const registerAUser = async (req, res) => {
   try {
-    const { name, email, password, phone } = req.body;
+    const { name, email, password, avatar, phone } = req.body;
 
     if (!name || !email || !password || !phone) {
       return res.status(400).json({ error: "Please Enter All The Details" });
     }
 
-    /*const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-      folder: "socialmediavatars",
-    });*/
+    const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+      folder: "repliq(ecomm)",
+    });
 
     // Create the new user
     const newUser = await userDb.create({
       name,
       email,
       password,
-      avatar: {
-        public_id: "public-id",
-        url: "public-url",
-      },
+      avatar: { public_id: myCloud.public_id, url: myCloud.secure_url },
       phone,
     });
 
@@ -149,6 +146,9 @@ const deleteUser = async (req, res) => {
         message: `User does not exist with Id: ${req.params.id}`,
       });
     }
+    const imageId = user.avatar.public_id;
+
+    await cloudinary.v2.uploader.destroy(imageId);
 
     // Check if the user to be deleted is an admin
     if (user.role === "admin") {

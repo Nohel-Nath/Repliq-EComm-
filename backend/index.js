@@ -1,7 +1,6 @@
 const app = require("./app");
 const morgan = require("morgan");
 const cloudinary = require("cloudinary");
-const dotenv = require("dotenv");
 
 const connectDB = require("./connection/database");
 connectDB();
@@ -20,9 +19,9 @@ process.on("uncaughtException", (err) => {
   process.exit(1);
 });
 
-// Config
-
-dotenv.config({ path: ".env" });
+if (process.env.NODE_ENV !== "PRODUCTION") {
+  require("dotenv").config({ path: "backend/.env" });
+}
 
 const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => {

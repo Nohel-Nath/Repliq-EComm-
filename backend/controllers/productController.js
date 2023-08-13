@@ -6,28 +6,28 @@ const cloudinary = require("cloudinary");
 //create-product//Admin
 const createProduct = async (req, res, next) => {
   try {
-    /* let images = [];
-  
-      if (typeof req.body.images === "string") {
-        images.push(req.body.images);
-      } else {
-        images = req.body.images;
-      }
-  
-      const imagesLinks = [];
-  
-      for (let i = 0; i < images.length; i++) {
-        const result = await cloudinary.v2.uploader.upload(images[i], {
-          folder: "products",
-        });
-  
-        imagesLinks.push({
-          public_id: result.public_id,
-          url: result.secure_url,
-        });
-      }
-      req.body.images = imagesLinks;
-      req.body.user = req.user.id;*/
+    let images = [];
+
+    if (typeof req.body.images === "string") {
+      images.push(req.body.images);
+    } else {
+      images = req.body.images;
+    }
+
+    const imagesLinks = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const result = await cloudinary.v2.uploader.upload(images[i], {
+        folder: "repliq(products)",
+      });
+
+      imagesLinks.push({
+        public_id: result.public_id,
+        url: result.secure_url,
+      });
+    }
+    req.body.images = imagesLinks;
+    req.body.user = req.user.id;
 
     const product = await productDb.create(req.body);
 
@@ -62,7 +62,7 @@ const getAllProductsAdmin = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   try {
-    const products = await productDb.find().sort({ createdAt: -1 }); // Sort by createdAt field in descending order
+    const products = await productDb.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
@@ -103,18 +103,50 @@ const getSingleProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const productId = req.params.id;
+    let product = await productDb.findById(req.params.id);
 
-    const updatedProduct = await productDb.findByIdAndUpdate(
-      productId,
-      req.body,
-      {
-        new: true,
-        runValidators: true,
+    // Images Start Here
+    let images = [];
+
+    if (typeof req.body.images === "string") {
+      images.push(req.body.images);
+    } else {
+      images = req.body.images;
+    }
+
+    if (images !== undefined && images.length > 0) {
+      // Deleting Images From Cloudinary
+      if (product.images.length > 0) {
+        for (let i = 0; i < product.images.length; i++) {
+          await cloudinary.v2.uploader.destroy(product.images[i].public_id);
+        }
       }
-    );
 
-    if (!updatedProduct) {
+      const imagesLinks = [];
+
+      for (let i = 0; i < images.length; i++) {
+        const result = await cloudinary.v2.uploader.upload(images[i], {
+          folder: "repliq(products)",
+        });
+
+        imagesLinks.push({
+          public_id: result.public_id,
+          url: result.secure_url,
+        });
+      }
+
+      req.body.images = imagesLinks;
+    } else {
+      req.body.images = product.images;
+    }
+
+    product = await productDb.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found",
@@ -123,7 +155,7 @@ const updateProduct = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      product: updatedProduct,
+      product,
     });
   } catch (error) {
     res.status(500).json({
@@ -135,16 +167,21 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    const productId = req.params.id; // Assuming the product ID is provided as a URL parameter
+    const product = await productDb.findById(req.params.id); // Assuming the product ID is provided as a URL parameter
 
-    const deletedProduct = await productDb.findByIdAndDelete(productId);
-
-    if (!deletedProduct) {
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found",
       });
     }
+
+    // Deleting Images From Cloudinary
+    for (let i = 0; i < product.images.length; i++) {
+      await cloudinary.v2.uploader.destroy(product.images[i].public_id);
+    }
+
+    await productDb.deleteOne({ _id: req.params.id });
 
     res.status(200).json({
       success: true,

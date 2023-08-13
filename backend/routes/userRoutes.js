@@ -1,8 +1,7 @@
 const express = require("express");
 const router = express.Router();
-
-router.use(express.json({ limit: "50mb" }));
-router.use(express.urlencoded({ extended: true, limit: "50mb" }));
+router.use(express.urlencoded({ extended: false }));
+router.use(express.json());
 const userController = require("../controllers/userController");
 const { isAuthenticatedUser, authorizeRoles } = require("../middleware/auth");
 

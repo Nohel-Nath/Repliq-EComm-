@@ -7,7 +7,7 @@ dotenv.config({ path: ".env" });
 
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-
+const path = require("path");
 const compression = require("compression");
 
 app.use(express.json({ limit: "50mb" }));
@@ -29,8 +29,10 @@ const productRouter = require("./routes/productRoutes");
 app.use("/user", useRouter);
 app.use("/product", productRouter);
 
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
+app.use(express.static(path.join(__dirname, "./public"), { maxAge: 31536000 }));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "./public/index.html"));
 });
 
 module.exports = app;

@@ -1,0 +1,10 @@
+.product-item {
+  transition: border 0.3s;
+  border: 2px solid transparent;
+  border-radius: 15px;
+}
+
+.product-item:hover {
+  box-shadow: 0 0 15px rgba(15, 15, 15, 0.26);
+  transform: translateY(-5px);
+}
