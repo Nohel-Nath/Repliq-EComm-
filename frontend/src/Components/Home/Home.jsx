@@ -10,7 +10,7 @@ function Home() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3005/product/allLatest"
+          "https://repliq-ecomm.onrender.com/product/allLatest"
         );
         setProducts(response.data.products); // Update to response.data.products
       } catch (error) {

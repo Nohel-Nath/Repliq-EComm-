@@ -69,7 +69,7 @@ export const registerAUser =
         withCredentials: true,
       };
       const { data } = await axios.post(
-        `http://localhost:3005/user/registration`,
+        `https://repliq-ecomm.onrender.com/user/registration`,
         { name, email, password, avatar, phone },
         config
       );
@@ -97,7 +97,7 @@ export const logout = () => async (dispatch) => {
       withCredentials: true,
     };
     const { data } = await axios.get(
-      `http://localhost:3005/user/logout`,
+      `https://repliq-ecomm.onrender.com/user/logout`,
       config
     );
     const token = data.token;
@@ -120,7 +120,7 @@ export const getUserDetails = () => async (dispatch) => {
     };
 
     const { data } = await axios.get(
-      `http://localhost:3005/user/details`,
+      `https://repliq-ecomm.onrender.com/user/details`,
       config
     );
 
@@ -144,7 +144,7 @@ export const getAllUsers = () => async (dispatch) => {
     };
 
     const { data } = await axios.get(
-      `http://localhost:3005/user/allUsers`,
+      `https://repliq-ecomm.onrender.com/user/allUsers`,
       config
     );
 
@@ -168,7 +168,7 @@ export const getAdminProduct = () => async (dispatch) => {
     };
 
     const { data } = await axios.get(
-      "http://localhost:3005/product/all",
+      "https://repliq-ecomm.onrender.com/product/all",
       config
     );
 
@@ -196,7 +196,7 @@ export const createProduct = (productData) => async (dispatch) => {
     };
 
     const { data } = await axios.post(
-      `http://localhost:3005/product/create`,
+      `https://repliq-ecomm.onrender.com/product/create`,
       productData,
       config
     );
@@ -224,7 +224,7 @@ export const updateProduct = (id, productData) => async (dispatch) => {
     };
 
     const { data } = await axios.put(
-      `http://localhost:3005/product/update/${id}`,
+      `https://repliq-ecomm.onrender.com/product/update/${id}`,
       productData,
       config
     );
@@ -245,7 +245,7 @@ export const getProductDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: PRODUCT_DETAILS_REQUEST });
     const { data } = await axios.get(
-      `http://localhost:3005/product/single/${id}`
+      `https://repliq-ecomm.onrender.com/product/single/${id}`
     );
 
     dispatch({

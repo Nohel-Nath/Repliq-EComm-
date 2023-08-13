@@ -25,7 +25,7 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 
 const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on https://repliq-ecomm.onrender.com/`);
 });
 
 process.on("uncaughtException", (err) => {

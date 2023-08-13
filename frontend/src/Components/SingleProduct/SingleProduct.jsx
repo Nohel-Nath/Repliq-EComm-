@@ -18,7 +18,7 @@ function SingleProduct() {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3005/product/single/${id}`
+          `https://repliq-ecomm.onrender.com/product/single/${id}`
         );
         setProduct(response.data.product);
       } catch (error) {

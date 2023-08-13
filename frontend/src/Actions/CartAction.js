@@ -4,7 +4,7 @@ import { ADD_TO_CART, REMOVE_CART_ITEM } from "../Constants/CartConstants";
 // Add to Cart
 export const addItemsToCart = (id, quantity) => async (dispatch, getState) => {
   const { data } = await axios.get(
-    `http://localhost:3005/product/single/${id}`
+    `https://repliq-ecomm.onrender.com/product/single/${id}`
   );
 
   dispatch({
